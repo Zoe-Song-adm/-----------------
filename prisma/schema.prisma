@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  VOLUNTEER
+  ADMIN
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(VOLUNTEER)
+  cohortYear   Int
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile       VolunteerProfile?
+  clockRecords  ClockRecord[]
+  workFiles     WorkFile[]
+  apartment     Apartment?
+  repairRequests RepairRequest[]
+  leaveRequests  LeaveRequest[]
+}
+
+model VolunteerProfile {
+  id                 String    @id @default(cuid())
+  userId             String    @unique
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  birthday           DateTime?
+  termStart          DateTime?
+  termEnd            DateTime?
+  passportNo         String?
+  dispatchUniversity String?
+  teachingSchool     String?
+  spanishName        String?
+  phone              String?
+  updatedAt          DateTime  @updatedAt
+}
+
+model ClockRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model WorkFile {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  originalName String
+  storedName   String
+  mimeType     String
+  size         Int
+  description  String?
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Apartment {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address         String
+  frontDeskPhone  String
+  imagePaths      String   @default("[]")
+  updatedAt       DateTime @updatedAt
+}
+
+model RepairRequest {
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  description   String
+  imagePaths    String        @default("[]")
+  status        RequestStatus @default(PENDING)
+  adminComment  String?
+  submittedAt   DateTime      @default(now())
+  processedAt   DateTime?
+  processingMs  Int?
+
+  @@index([userId, status])
+}
+
+model LeaveRequest {
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  startAt       DateTime
+  endAt         DateTime
+  reason        String
+  status        RequestStatus @default(PENDING)
+  adminComment  String?
+  submittedAt   DateTime      @default(now())
+  processedAt   DateTime?
+  processingMs  Int?
+
+  @@index([userId, status])
+}
