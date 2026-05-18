@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>秘鲁中华三民联校志愿者管理平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <span class="brand-icon" aria-hidden="true">校</span>
+      <div>
+        <h1 class="brand-title">秘鲁中华三民联校志愿者管理平台</h1>
+        <p class="tagline">Colegio Chino Peruano San Min · 志愿服务管理</p>
+      </div>
+    </div>
+    <nav class="nav" role="tablist">
+      <button class="nav-btn active" data-tab="work" role="tab" aria-selected="true">工作</button>
+      <button class="nav-btn" data-tab="life" role="tab">生活</button>
+      <button class="nav-btn" data-tab="volunteers" role="tab">志愿者信息</button>
+    </nav>
+  </header>
+
+  <main class="main">
+    <!-- 工作 -->
+    <section id="work" class="panel active" role="tabpanel">
+      <div class="panel-intro card intro-card">
+        <h2>工作栏</h2>
+        <p>上班打卡、上传工作文件、管理工作事项。</p>
+      </div>
+
+      <div class="sub-nav" role="tablist">
+        <button class="sub-nav-btn active" data-sub="work-clock">上班打卡</button>
+        <button class="sub-nav-btn" data-sub="work-files">工作文件</button>
+        <button class="sub-nav-btn" data-sub="work-tasks">工作事项</button>
+      </div>
+
+      <!-- 打卡 -->
+      <div id="work-clock" class="sub-panel active">
+        <div class="clock-panel card">
+          <div class="clock-display">
+            <span class="clock-time" id="clock-now">--:--:--</span>
+            <span class="clock-date" id="clock-date">----年--月--日</span>
+          </div>
+          <label class="field-label">选择志愿者</label>
+          <select id="clock-volunteer" class="field-select"></select>
+          <div class="clock-actions">
+            <button type="button" class="btn primary btn-clock-in" id="btn-clock-in">上班打卡</button>
+            <button type="button" class="btn ghost btn-clock-out" id="btn-clock-out">下班打卡</button>
+          </div>
+          <p class="hint-text" id="clock-status-hint"></p>
+        </div>
+        <h3 class="block-title">打卡记录</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>志愿者</th>
+                <th>类型</th>
+                <th>打卡时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="clock-tbody"></tbody>
+          </table>
+          <p class="empty-hint table-empty" id="empty-clock">暂无打卡记录</p>
+        </div>
+      </div>
+
+      <!-- 工作文件 -->
+      <div id="work-files" class="sub-panel" hidden>
+        <div class="panel-header">
+          <h3 class="block-title">工作文件收集</h3>
+          <button type="button" class="btn primary" id="btn-upload-work-file">+ 上传文件</button>
+        </div>
+        <div id="work-file-list" class="file-list"></div>
+        <p class="empty-hint" id="empty-work-files">暂无工作文件</p>
+      </div>
+
+      <!-- 工作事项 -->
+      <div id="work-tasks" class="sub-panel" hidden>
+        <div class="stats-row">
+          <article class="stat-mini"><span class="stat-label">进行中</span><span class="stat-value" id="stat-work-active">0</span></article>
+          <article class="stat-mini"><span class="stat-label">待开展</span><span class="stat-value" id="stat-work-upcoming">0</span></article>
+          <article class="stat-mini"><span class="stat-label">已完成</span><span class="stat-value" id="stat-work-done">0</span></article>
+        </div>
+        <div class="panel-header">
+          <h3 class="block-title">工作事项</h3>
+          <button type="button" class="btn primary" id="btn-add-work">+ 添加工作</button>
+        </div>
+        <div class="filter-bar">
+          <select id="filter-work-type" aria-label="筛选类型">
+            <option value="">全部类型</option>
+            <option value="teaching">教学</option>
+            <option value="meeting">会议</option>
+            <option value="event">校园活动</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+        <div id="work-cards" class="item-grid"></div>
+        <p class="empty-hint" id="empty-work">暂无工作记录</p>
+      </div>
+    </section>
+
+    <!-- 生活 -->
+    <section id="life" class="panel" role="tabpanel" hidden>
+      <div class="panel-intro card intro-card life-intro">
+        <h2>生活栏</h2>
+        <p>公寓住宿登记、家具报修、请假申请与生活通知。</p>
+      </div>
+
+      <div class="sub-nav" role="tablist">
+        <button class="sub-nav-btn active" data-sub="life-apartment">公寓住宿</button>
+        <button class="sub-nav-btn" data-sub="life-repair">家具报修</button>
+        <button class="sub-nav-btn" data-sub="life-leave">请假</button>
+        <button class="sub-nav-btn" data-sub="life-notices">生活通知</button>
+      </div>
+
+      <div id="life-apartment" class="sub-panel active">
+        <div class="panel-header">
+          <h3 class="block-title">志愿者公寓登记</h3>
+          <button type="button" class="btn primary" id="btn-add-apartment">+ 登记公寓</button>
+        </div>
+        <div id="apartment-list" class="apartment-grid"></div>
+        <p class="empty-hint" id="empty-apartment">暂无公寓登记</p>
+      </div>
+
+      <div id="life-repair" class="sub-panel" hidden>
+        <div class="panel-header">
+          <h3 class="block-title">家具损坏报修</h3>
+          <button type="button" class="btn primary" id="btn-add-repair">+ 提交报修</button>
+        </div>
+        <div id="repair-list" class="item-grid"></div>
+        <p class="empty-hint" id="empty-repair">暂无报修记录</p>
+      </div>
+
+      <div id="life-leave" class="sub-panel" hidden>
+        <div class="panel-header">
+          <h3 class="block-title">请假申请</h3>
+          <button type="button" class="btn primary" id="btn-add-leave">+ 申请请假</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>志愿者</th>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th>事由</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="leave-tbody"></tbody>
+          </table>
+          <p class="empty-hint table-empty" id="empty-leave">暂无请假记录</p>
+        </div>
+      </div>
+
+      <div id="life-notices" class="sub-panel" hidden>
+        <div class="panel-header">
+          <h3 class="block-title">生活通知</h3>
+          <button type="button" class="btn primary" id="btn-add-life">+ 发布通知</button>
+        </div>
+        <div class="filter-bar">
+          <select id="filter-life-category">
+            <option value="">全部分类</option>
+            <option value="dining">餐饮</option>
+            <option value="transport">交通</option>
+            <option value="notice">通知</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+        <div id="life-cards" class="item-grid"></div>
+        <p class="empty-hint" id="empty-life">暂无生活通知</p>
+      </div>
+    </section>
+
+    <!-- 志愿者信息 -->
+    <section id="volunteers" class="panel" role="tabpanel" hidden>
+      <div class="panel-intro card intro-card volunteer-intro">
+        <h2>志愿者信息栏</h2>
+        <p>收集志愿者档案：生日、任期、护照、派出院校、任教学校、西语名等。</p>
+      </div>
+
+      <div class="stats-row">
+        <article class="stat-mini accent">
+          <span class="stat-label">在册志愿者</span>
+          <span class="stat-value" id="stat-volunteers">0</span>
+        </article>
+        <article class="stat-mini">
+          <span class="stat-label">累计服务时长</span>
+          <span class="stat-value" id="stat-hours">0<span class="unit">h</span></span>
+        </article>
+      </div>
+
+      <div class="panel-header">
+        <h2 class="section-title">志愿者档案</h2>
+        <button type="button" class="btn primary" id="btn-add-volunteer">+ 添加志愿者</button>
+      </div>
+
+      <div class="search-bar">
+        <input type="search" id="search-volunteer" placeholder="搜索姓名、西语名、护照号、院校…" />
+      </div>
+
+      <div id="volunteer-cards" class="volunteer-grid"></div>
+      <p class="empty-hint" id="empty-volunteers">还没有志愿者档案</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>秘鲁中华三民联校志愿者管理平台 · 数据保存在本机浏览器（图片/文件建议小于 3MB）</p>
+  </footer>
+
+  <!-- 工作事项 -->
+  <dialog id="modal-work" class="modal">
+    <form id="form-work" method="dialog">
+      <header class="modal-header">
+        <h3 id="modal-work-title">添加工作</h3>
+        <button type="button" class="icon-btn close-modal" data-close="modal-work" aria-label="关闭">×</button>
+      </header>
+      <input type="hidden" id="work-id" />
+      <div class="form-grid">
+        <label class="full">事项名称 <span class="req">*</span><input type="text" id="w-title" required maxlength="60" /></label>
+        <label>类型<select id="w-type"><option value="teaching">教学</option><option value="meeting">会议</option><option value="event">校园活动</option><option value="other">其他</option></select></label>
+        <label>日期 <span class="req">*</span><input type="date" id="w-date" required /></label>
+        <label>地点<input type="text" id="w-location" /></label>
+        <label>负责人<input type="text" id="w-lead" /></label>
+        <label>状态<select id="w-status"><option value="upcoming">待开展</option><option value="ongoing">进行中</option><option value="done">已完成</option></select></label>
+        <label class="full">详细说明<textarea id="w-desc" rows="3"></textarea></label>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn ghost close-modal" data-close="modal-work">取消</button>
+        <button type="submit" class="btn primary">保存</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- 工作文件 -->
+  <dialog id="modal-work-file" class="modal">
+    <form id="form-work-file" method="dialog">
+      <header class="modal-header">
+        <h3>上传工作文件</h3>
+        <button type="button" class="icon-btn close-modal" data-close="modal-work-file" aria-label="关闭">×</button>
+      </header>
+      <div class="form-grid">
+        <label class="full">志愿者 <span class="req">*</span><select id="wf-volunteer" required></select></label>
+        <label class="full">文件说明<input type="text" id="wf-desc" placeholder="如：教案、周报、活动方案" /></label>
+        <label class="full">选择文件 <span class="req">*</span>
+          <input type="file" id="wf-file" required accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.zip" />
+          <span class="field-hint">支持 PDF、Office、图片、ZIP，单文件不超过 3MB</span>
+        </label>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn ghost close-modal" data-close="modal-work-file">取消</button>
+        <button type="submit" class="btn primary">上传</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- 公寓 -->
+  <dialog id="modal-apartment" class="modal modal-wide">
+    <form id="form-apartment" method="dialog">
+      <header class="modal-header">
+        <h3 id="modal-apartment-title">登记公寓</h3>
+        <button type="button" class="icon-btn close-modal" data-close="modal-apartment" aria-label="关闭">×</button>
+      </header>
+      <input type="hidden" id="apartment-id" />
+      <div class="form-grid">
+        <label class="full">志愿者 <span class="req">*</span><select id="apt-volunteer" required></select></label>
+        <label class="full">公寓地址 <span class="req">*</span><input type="text" id="apt-address" required placeholder="街道、门牌、房间号" /></label>
+        <label>前台管理电话 <span class="req">*</span><input type="tel" id="apt-phone" required /></label>
+        <label>房间号<input type="text" id="apt-room" placeholder="选填" /></label>
+        <label class="full">公寓图片
+          <input type="file" id="apt-images" accept="image/*" multiple />
+          <span class="field-hint">可上传多张，单张不超过 3MB</span>
+        </label>
+        <label class="full">备注<textarea id="apt-note" rows="2"></textarea></label>
+        <div class="full" id="apt-preview" class="image-preview"></div>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn ghost close-modal" data-close="modal-apartment">取消</button>
+        <button type="submit" class="btn primary">保存</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- 报修 -->
+  <dialog id="modal-repair" class="modal modal-wide">
+    <form id="form-repair" method="dialog">
+      <header class="modal-header">
+        <h3>家具损坏报修</h3>
+        <button type="button" class="icon-btn close-modal" data-close="modal-repair" aria-label="关闭">×</button>
+      </header>
+      <input type="hidden" id="repair-id" />
+      <div class="form-grid">
+        <label class="full">志愿者 <span class="req">*</span><select id="repair-volunteer" required></select></label>
+        <label class="full">损坏物品 <span class="req">*</span><input type="text" id="repair-item" required placeholder="如：床架、水龙头、桌椅" /></label>
+        <label class="full">损坏说明 <span class="req">*</span><textarea id="repair-desc" rows="3" required></textarea></label>
+        <label class="full">现场照片
+          <input type="file" id="repair-images" accept="image/*" multiple />
+        </label>
+        <label>处理状态<select id="repair-status"><option value="pending">待处理</option><option value="processing">处理中</option><option value="done">已完成</option></select></label>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn ghost close-modal" data-close="modal-repair">取消</button>
+        <button type="submit" class="btn primary">提交</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- 请假 -->
+  <dialog id="modal-leave" class="modal modal-wide">
+    <form id="form-leave" method="dialog">
+      <header class="modal-header">
+        <h3 id="modal-leave-title">申请请假</h3>
+        <button type="button" class="icon-btn close-modal" data-close="modal-leave" aria-label="关闭">×</button>
+      </header>
+      <input type="hidden" id="leave-id" />
+      <div class="form-grid">
+        <label class="full">志愿者 <span class="req">*</span><select id="leave-volunteer" required></select></label>
+        <label>开始时间 <span class="req">*</span><input type="datetime-local" id="leave-start" required /></label>
+        <label>结束时间 <span class="req">*</span><input type="datetime-local" id="leave-end" required /></label>
+        <label>审批状态<select id="leave-status"><option value="pending">待审批</option><option value="approved">已批准</option><option value="rejected">已驳回</option></select></label>
+        <label class="full">请假事由 <span class="req">*</span><textarea id="leave-reason" rows="3" required></textarea></label>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn ghost close-modal" data-close="modal-leave">取消</button>
+        <button type="submit" class="btn primary">保存</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- 生活通知 -->
+  <dialog id="modal-life" class="modal">
+    <form id="form-life" method="dialog">
+      <header class="modal-header">
+        <h3 id="modal-life-title">发布生活通知</h3>
+        <button type="button" class="icon-btn close-modal" data-close="modal-life" aria-label="关闭">×</button>
+      </header>
+      <input type="hidden" id="life-id" />
+      <div class="form-grid">
+        <label class="full">标题 <span class="req">*</span><input type="text" id="l-title" required /></label>
+        <label>分类<select id="l-category"><option value="dining">餐饮</option><option value="transport">交通</option><option value="notice">通知</option><option value="other">其他</option></select></label>
+        <label>日期<input type="date" id="l-date" /></label>
+        <label>联系人<input type="text" id="l-contact" /></label>
+        <label class="full">内容 <span class="req">*</span><textarea id="l-content" rows="4" required></textarea></label>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn ghost close-modal" data-close="modal-life">取消</button>
+        <button type="submit" class="btn primary">保存</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- 志愿者 -->
+  <dialog id="modal-volunteer" class="modal modal-wide">
+    <form id="form-volunteer" method="dialog">
+      <header class="modal-header">
+        <h3 id="modal-volunteer-title">添加志愿者</h3>
+        <button type="button" class="icon-btn close-modal" data-close="modal-volunteer" aria-label="关闭">×</button>
+      </header>
+      <input type="hidden" id="volunteer-id" />
+      <div class="form-grid form-grid-3">
+        <label>中文姓名 <span class="req">*</span><input type="text" id="v-name" required maxlength="30" /></label>
+        <label>西语名<input type="text" id="v-spanish" placeholder="Nombre en español" /></label>
+        <label>生日<input type="date" id="v-birthday" /></label>
+        <label>护照号<input type="text" id="v-passport" /></label>
+        <label>派出院校<input type="text" id="v-send-school" placeholder="国内派出单位" /></label>
+        <label>任教学校<input type="text" id="v-teach-school" placeholder="如：秘鲁中华三民联校" /></label>
+        <label>任期开始<input type="date" id="v-term-start" /></label>
+        <label>任期结束<input type="date" id="v-term-end" /></label>
+        <label>来自（国家/地区）<input type="text" id="v-origin" /></label>
+        <label>手机号<input type="tel" id="v-phone" /></label>
+        <label>邮箱<input type="email" id="v-email" /></label>
+        <label>任教科目<input type="text" id="v-skills" /></label>
+        <label>到校日期<input type="date" id="v-arrival" /></label>
+        <label>服务时长（小时）<input type="number" id="v-hours" min="0" value="0" /></label>
+        <label>状态<select id="v-status"><option value="active">在册</option><option value="inactive">已离任</option></select></label>
+        <label class="full">备注<textarea id="v-note" rows="2"></textarea></label>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn ghost close-modal" data-close="modal-volunteer">取消</button>
+        <button type="submit" class="btn primary">保存</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
